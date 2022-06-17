@@ -1,10 +1,13 @@
+/* 
+Covid 19 Data Exploration
+Skill used: Joins, CTE's, Temp tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
+
+*/
+
 Select *
 from PortfolioProject..CovidDeaths
 order by 3,4
 
---Select *
---from PortfolioProject..CovidVaccinations
---order by 3,4
 
 --Select the data that I am going to be using
 
@@ -13,7 +16,8 @@ from PortfolioProject..CovidDeaths
 order by 1,2
 
 --Looking at total cases vs total deaths
---Shows the likelihood of dying of you get Covid in India
+--Shows the likelihood of dying of you get Covid in India (Repalace India with your country name)
+
 Select location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
 from PortfolioProject..CovidDeaths
 where location like '%India%'
@@ -21,6 +25,7 @@ order by 1,2
 
 --Looking at total cases vs population
 --Shows what percentage of population has got covid
+
 Select location, date, population, total_cases, (total_cases/population)*100 as CasePercentage
 from PortfolioProject..CovidDeaths
 where location like '%India%'
@@ -41,16 +46,16 @@ where continent is not null
 Group by location
 order by TotalDeathCount desc
 
---Death count for continents
+--BREAKING THINGS DOWN BY CONTINENT
+--Showing continents with the highest death count per population
+
 Select continent, MAX(cast(total_deaths as int)) as TotalDeathCount
 From PortfolioProject..CovidDeaths
 where continent is not null
 Group by continent
 order by TotalDeathCount desc
 
---select * 
---From PortfolioProject..CovidDeaths 
---where location = 'Canada'
+-- GLOBAL NUMBERS
 
 Select SUM(new_cases) as TotalNewCases, SUM(cast(new_deaths as int)) as TotalNewDeaths, 
 	SUM(cast(new_deaths as int))/SUM(new_cases)*100 as NewDeathPercentage 
@@ -72,7 +77,7 @@ order by 2,3
 
 
 
---USE CTE (Common Table Expression)
+--USE CTE (Common Table Expression) to perform calculation on Partition By in previous query
 
 With PopvsVac (continent, location, date, population, new_vaccinations, VaccineRollingCount)
 as
@@ -92,7 +97,7 @@ from PopvsVac
 
 
 
---TEMP TABLE
+--TEMP TABLE to perform calculation on Partition By in previous query
 
 DROP table if exists #PercentPopulationVaccinated
 create table #PercentPopulationVaccinated
